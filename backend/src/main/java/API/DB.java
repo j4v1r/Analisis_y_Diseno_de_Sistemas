@@ -1,4 +1,5 @@
 package API;
+
 /**
  *
  * @author aleja
@@ -33,7 +34,10 @@ public class DB implements java.io.Serializable {
         } catch (java.sql.SQLException e) {
             throw e;
         }
+    }
 
+    public Connection getConnection() {
+        return con;
     }
 
     public void closeConnection()
@@ -52,8 +56,8 @@ public class DB implements java.io.Serializable {
         rs = null;
 
     }
-//------------------------------------------
-
+    
+    //------------------------------------------
     public int executeUpdate(String sql)
             throws java.sql.SQLException {
         if (con == null) {
@@ -75,6 +79,17 @@ public class DB implements java.io.Serializable {
     }
 
     //-----------------------------------------
+    public PreparedStatement prepareStatement(String sql)
+            throws SQLException {
+        if (con == null) {
+            throw new SQLException(
+                    "No ha configurado correctamente la conexion"
+            );
+        }
+        return con.prepareStatement(sql);
+    }
+
+    //-----------------------------------------
     public ResultSet executeQuery(String sql)
             throws java.sql.SQLException {
         if (con == null) {
@@ -93,8 +108,8 @@ public class DB implements java.io.Serializable {
         }
         return rs;
     }
+    
     //---------------------------------------------
-
     public String getUrl() {
         return url;
     }

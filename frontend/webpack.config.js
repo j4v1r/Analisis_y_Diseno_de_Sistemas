@@ -45,7 +45,7 @@ module.exports = {
         static: {
             directory: path.resolve(__dirname, 'dist'),
         },
-        port: 8080, //Puerto del servidor
+        port: 3000, //Puerto del servidor
         historyApiFallback: true, //Activa el modo de historial para aplicaciones de una sola página
         open: true, //Abre el navegador automáticamente al iniciar el servidor
         hot: true, //Habilita el reemplazo en caliente de módulos (Hot Module Replacement)
