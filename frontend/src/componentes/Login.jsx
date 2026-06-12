@@ -4,7 +4,7 @@ import './Login.css';
 import fondo from '../assets/fondo.jpg';
 import Swal from 'sweetalert2';
 
-function Login() {
+function Login({ onLogin }) {
 
     const [usuario, setUsuario] = useState('');
     const [password, setPassword] = useState('');
@@ -23,17 +23,18 @@ const handleSubmit = (e) => {
     return;
 }
 
-    if (
-        usuario === 'admin' &&
-        password === '1234'
-    ) {
+if (
+    usuario === 'admin' &&
+    password === '1234'
+) {
 
-        Swal.fire({
-            icon: 'success',
-            title: 'Acceso concedido',
-            text: 'Bienvenido al sistema',
-            confirmButtonText: 'Aceptar'
-        });
+    Swal.fire({
+        icon: 'success',
+        title: 'Acceso concedido',
+        text: 'Bienvenido al sistema'
+    });
+
+    onLogin(usuario);
 
     } else {
 
@@ -60,9 +61,10 @@ const handleSubmit = (e) => {
                 <hr />
 
                 <p><strong>Integrantes:</strong></p>
-                <p>Colunga Aguilar Javier Alejandro</p>
-                <p>Hernández López Luis Ángel </p>
-                <p>Vásquez Andrés Rajiv Eduardo </p>
+                <p>Colunga Aguilar Javier Alejandro, 2024630224</p>
+                <p>Hernández López Luis Ángel, 2024630706</p>
+                <p>Vásquez Andrés Rajiv Eduardo, 2024630037</p>
+                <p>Grupo: 5CM1</p>
             </div>
 
             <div className="login-card">
