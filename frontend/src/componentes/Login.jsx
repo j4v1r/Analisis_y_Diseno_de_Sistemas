@@ -19,7 +19,8 @@ class Login extends React.Component {
     validar = (usuario, password) => {
         console.log('Usuario:', usuario);
         console.log('Contraseña:', password);
-        fetch('http://localhost:8080/backend/Login?user=' + usuario + '&password=' + password + '')
+        // fetch('http://localhost:8080/backend/Login?user=' + usuario + '&password=' + password + '')
+        fetch('Login?user=' + usuario + '&password=' + password + '')
             .then(response => response.json())
             .then(usuario => {
                 if (usuario.status === "yes") {

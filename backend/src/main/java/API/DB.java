@@ -26,7 +26,7 @@ public class DB implements java.io.Serializable {
             throws IOException, java.sql.SQLException {
         try {
             Class.forName(driver);
-            con = DriverManager.getConnection(url, "root", "Batibruc3m#n");
+            con = DriverManager.getConnection(url, "root", "1234");
             this.url = url;
             this.driver = driver;
         } catch (ClassNotFoundException e) {
@@ -56,7 +56,7 @@ public class DB implements java.io.Serializable {
         rs = null;
 
     }
-    
+
     //------------------------------------------
     public int executeUpdate(String sql)
             throws java.sql.SQLException {
@@ -108,7 +108,7 @@ public class DB implements java.io.Serializable {
         }
         return rs;
     }
-    
+
     //---------------------------------------------
     public String getUrl() {
         return url;
