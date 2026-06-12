@@ -12,11 +12,14 @@ class Login extends React.Component {
         this.state = {
             condition: false,
             tiposuario: '',
+            noRegistrado: false
         };
     }
 
     validar = (usuario, password) => {
-        fetch('http://localhost:8080/Login?user=' + usuario + '&password=' + password + '')
+        console.log('Usuario:', usuario);
+        console.log('Contraseña:', password);
+        fetch('http://localhost:8080/backend/Login?user=' + usuario + '&password=' + password + '')
             .then(response => response.json())
             .then(usuario => {
                 if (usuario.status === "yes") {
@@ -32,27 +35,32 @@ class Login extends React.Component {
                             tiposuario: usuario.tipo
                         });
                     } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Acceso denegado',
-                            text: 'Usuario o contraseña incorrectos',
-                            confirmButtonText: 'Aceptar'
-                        });
                         this.setState({
                             condition: false,
-                            tiposuario: ''
+                            tiposuario: '',
+                            noRegistrado: true
                         });
                     }
+                } else {
+                    this.setState({
+                        condition: false,
+                        tiposuario: '',
+                        noRegistrado: true
+                    });
                 }
             });
     }
 
     render() {
 
-        const { condition, tiposuario } = this.state;
+        const { condition, tiposuario, noRegistrado } = this.state;
 
         if (condition && tiposuario === 'administrador') {
-            return <Navigate to="/admin" />;
+            return <Navigate to="/bienvenida" />;
+        }
+
+        if (noRegistrado) {
+            return <Navigate to="/noregistrado" />;
         }
 
         return (
@@ -105,8 +113,9 @@ class Login extends React.Component {
                         </div>
 
                         <button
+                            type="button"
                             className="btn btn-primary w-100"
-                            onClick={()=> this.validar(document.getElementById("user").value, document.getElementById("password").value)}
+                            onClick={() => this.validar(document.getElementById("user").value, document.getElementById("password").value)}
                         >
                             Ingresar
                         </button>

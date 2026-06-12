@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Bienvenida({ usuario }) {
@@ -6,6 +7,17 @@ function Bienvenida({ usuario }) {
     return (
 
         <div className="container mt-5">
+
+            <div className="text-end mb-2">
+
+                <Link
+                    to="/"
+                    className="text-danger text-decoration-none fw-bold"
+                >
+                    Cerrar sesión
+                </Link>
+
+            </div>
 
             <div className="card shadow">
 

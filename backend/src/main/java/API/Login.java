@@ -28,6 +28,11 @@ public class Login extends HttpServlet {
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Expires", "0");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+        response.setStatus(HttpServletResponse.SC_OK);
 
         String usuario = request.getParameter("user");
         String password = request.getParameter("password");
@@ -37,7 +42,7 @@ public class Login extends HttpServlet {
             DB bd = new DB();
             bd.setConnection(
                     "com.mysql.cj.jdbc.Driver",
-                    "jdbc:mysql://localhost/usuario?serverTimezone=UTC"
+                    "jdbc:mysql://localhost/ads_proyecto?serverTimezone=UTC"
             );
 
             PreparedStatement ps = bd.getConnection().prepareStatement(

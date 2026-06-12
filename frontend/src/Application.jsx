@@ -1,31 +1,26 @@
-import ReactDOM from 'react-dom/client';
-import Login from './componentes/Login';
-import React, { useState } from 'react';
-import Bienvenida from './componentes/Bienvenida';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter } from 'react-router-dom';
+import BootstrapReact from './componentes/BootstrapReact.jsx';
 
-const root = ReactDOM.createRoot(
-    document.getElementById('root')
-);
-
-root.render(
-    <React.StrictMode>
-        <Application />
-    </React.StrictMode>
-);
-
-function Application() {
-
-    const [usuario, setUsuario] = useState(null);
-
-    return (
-        <>
-            {
-                usuario
-                ? <Bienvenida usuario={usuario}/>
-                : <Login onLogin={setUsuario}/>
-            }
-        </>
-    );
+class Application extends React.Component {
+    render() {
+        return (
+            <BrowserRouter>
+                <BootstrapReact />
+            </BrowserRouter>
+        );
+    }
 }
 
 export default Application;
+
+window.onload = () => {
+    const rootElement = document.getElementById("root");
+
+    console.log("Contenedor:", rootElement);
+
+    const root = createRoot(rootElement);
+    root.render(<Application />);
+};
