@@ -17,14 +17,17 @@ class Login extends React.Component {
     }
 
     validar = (usuario, password) => {
-        console.log('Usuario:', usuario);
-        console.log('Contraseña:', password);
-        // fetch('http://localhost:8080/backend/Login?user=' + usuario + '&password=' + password + '')
-        fetch('Login?user=' + usuario + '&password=' + password + '')
+        //console.log('Usuario:', usuario);
+        //console.log('Contraseña:', password);
+        //fetch('http://localhost:8080/backend/Login?user=' + usuario + '&password=' + password + '')
+        fetch('/backend/Login?user=' + usuario + '&password=' + password + '')
             .then(response => response.json())
             .then(usuario => {
+                //console.log("JSON recibido:", usuario);
                 if (usuario.status === "yes") {
+                    //console.log("STATUS YES");
                     if (usuario.tipo === "administrador") {
+                        //console.log("ADMINISTRADOR");
                         Swal.fire({
                             icon: 'success',
                             title: 'Acceso concedido',
@@ -57,6 +60,8 @@ class Login extends React.Component {
         const { condition, tiposuario, noRegistrado } = this.state;
 
         if (condition && tiposuario === 'administrador') {
+            //console.log("NAVEGANDO A BIENVENIDA");
+
             return <Navigate to="/bienvenida" />;
         }
 

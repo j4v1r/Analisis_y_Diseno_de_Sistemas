@@ -7,7 +7,7 @@ import BootstrapReact from './componentes/BootstrapReact.jsx';
 class Application extends React.Component {
     render() {
         return (
-            <BrowserRouter>
+            <BrowserRouter >
                 <BootstrapReact />
             </BrowserRouter>
         );
