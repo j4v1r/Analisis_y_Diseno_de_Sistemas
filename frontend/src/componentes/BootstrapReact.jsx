@@ -1,23 +1,22 @@
-import React from "react";
-import { Routes, Route } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Login from './Login.jsx';
+import Bienvenida from './Bienvenida.jsx';
+import Graficadora from './Graficadora.jsx';
+import CrearDiagrama from './CrearDiagrama.jsx';
 
-import Login from "./Login.jsx";
-import NoRegistrado from "./ErrorLogin.jsx";
-import Bienvenida from "./Bienvenida.jsx";
-//import Info from "./Info.jsx"
+function BootstrapReact() {
+    const [usuario, setUsuario] = useState('');
 
-class BootstrapReact extends React.Component {
-
-    render() {
-        return (
-            <div>
-                <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/bienvenida" element={<Bienvenida />} />
-                    <Route path="/noregistrado" element={<NoRegistrado />} />
-                </Routes>
-            </div>);
-    }
+    return (
+        <Routes>
+            <Route path="/"           element={<Login setUsuario={setUsuario} />} />
+            <Route path="/bienvenida" element={<Bienvenida usuario={usuario} />} />
+            <Route path="/graficadora" element={<Graficadora usuario={usuario} />} />
+            <Route path="*"           element={<Navigate to="/" />} />
+            <Route path="/crear" element={<CrearDiagrama usuario={usuario} />} />
+        </Routes>
+    );
 }
-export default BootstrapReact; 
+
+export default BootstrapReact;

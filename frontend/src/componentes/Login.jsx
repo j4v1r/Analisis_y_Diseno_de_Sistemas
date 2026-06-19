@@ -1,139 +1,98 @@
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './Login.css';
-import fondo from '../assets/fondo.jpg';
-import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import '../Login.css';
 
-class Login extends React.Component {
+function Login({ setUsuario }) {
+    const [usuario, setUsuarioInput] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [cargando, setCargando] = useState(false);
+    const navigate = useNavigate();
 
-    constructor() {
-        super();
-        this.state = {
-            condition: false,
-            tiposuario: '',
-            noRegistrado: false
-        };
-    }
+    const handleLogin = () => {
+        if (!usuario || !password) {
+            setError('Por favor completa todos los campos.');
+            return;
+        }
 
-    validar = (usuario, password) => {
-        //console.log('Usuario:', usuario);
-        //console.log('Contraseña:', password);
-        //fetch('http://localhost:8080/backend/Login?user=' + usuario + '&password=' + password + '')
-        fetch('/backend/Login?user=' + usuario + '&password=' + password + '')
-            .then(response => response.json())
-            .then(usuario => {
-                //console.log("JSON recibido:", usuario);
-                if (usuario.status === "yes") {
-                    //console.log("STATUS YES");
-                    if (usuario.tipo === "administrador") {
-                        //console.log("ADMINISTRADOR");
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Acceso concedido',
-                            text: 'Bienvenido al sistema',
-                            confirmButtonText: 'Aceptar'
-                        });
-                        this.setState({
-                            condition: true,
-                            tiposuario: usuario.tipo
-                        });
-                    } else {
-                        this.setState({
-                            condition: false,
-                            tiposuario: '',
-                            noRegistrado: true
-                        });
-                    }
+        setCargando(true);
+        setError('');
+
+        fetch('http://localhost:8080/backend/Login?user=' + usuario + '&password=' + password)
+            .then(res => res.json())
+            .then(data => {
+                setCargando(false);
+                if (data.status === 'yes') {
+                    setUsuario(usuario);
+                    navigate('/bienvenida');
                 } else {
-                    this.setState({
-                        condition: false,
-                        tiposuario: '',
-                        noRegistrado: true
-                    });
+                    setError('Usuario o contraseña incorrectos.');
                 }
+            })
+            .catch(() => {
+                setCargando(false);
+                setError('No se pudo conectar al servidor.');
             });
-    }
+    };
 
-    render() {
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') handleLogin();
+    };
 
-        const { condition, tiposuario, noRegistrado } = this.state;
+    return (
+        <div className="fondo">
 
-        if (condition && tiposuario === 'administrador') {
-            //console.log("NAVEGANDO A BIENVENIDA");
-
-            return <Navigate to="/bienvenida" />;
-        }
-
-        if (noRegistrado) {
-            return <Navigate to="/noregistrado" />;
-        }
-
-        return (
-            <div className="fondo">
-
-                <div className="encabezado">
-                    <h1>Graficadora Online</h1>
-                    <h5>Diagramas de Flujo Multimedia</h5>
-
-                    <hr />
-
-                    <p><strong>Integrantes:</strong></p>
-                    <p>Colunga Aguilar Javier Alejandro</p>
-                    <p>Hernández López Luis Ángel </p>
-                    <p>Vásquez Andrés Rajiv Eduardo </p>
-                </div>
-
-                <div className="login-card">
-
-                    <h3 className="mb-4 text-center">
-                        Inicio de Sesión
-                    </h3>
-
-                    <form>
-
-                        <div className="mb-3">
-                            <label className="form-label">
-                                Usuario
-                            </label>
-
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="user"
-                                placeholder="Ingrese su usuario"
-                            />
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label">
-                                Contraseña
-                            </label>
-
-                            <input
-                                placeholder="Ingrese su contraseña"
-                                type="password"
-                                className="form-control"
-                                id="password"
-                            />
-                        </div>
-
-                        <button
-                            type="button"
-                            className="btn btn-primary w-100"
-                            onClick={() => this.validar(document.getElementById("user").value, document.getElementById("password").value)}
-                        >
-                            Ingresar
-                        </button>
-
-                    </form>
-
-                </div>
-
+            <div className="encabezado">
+                <h1>Graficadora <span>Online</span></h1>
+                <p>Diagramas de Flujo Multimedia</p>
             </div>
-        );
-    }
 
+            <div className="login-card">
+                <h2>Iniciar sesión</h2>
+                <p className="subtitulo">Accede a tu cuenta para gestionar diagramas</p>
+
+                <label>Usuario</label>
+                <input
+                    type="text"
+                    placeholder="Ingresa tu usuario"
+                    value={usuario}
+                    onChange={e => setUsuarioInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                />
+
+                <label>Contraseña</label>
+                <input
+                    type="password"
+                    placeholder="Ingresa tu contraseña"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                />
+
+                {error && (
+                    <p style={{ color: '#f87171', fontSize: '0.82rem', marginTop: '12px' }}>
+                        ⚠ {error}
+                    </p>
+                )}
+
+                <button
+                    className="btn-ingresar"
+                    onClick={handleLogin}
+                    disabled={cargando}
+                >
+                    {cargando ? 'Verificando...' : 'Ingresar'}
+                </button>
+            </div>
+
+            <div className="integrantes">
+                <strong>Integrantes</strong>
+                Colunga Aguilar Javier Alejandro<br />
+                Hernández López Luis Ángel<br />
+                Vásquez Andrés Rajiv Eduardo
+            </div>
+
+        </div>
+    );
 }
 
 export default Login;
