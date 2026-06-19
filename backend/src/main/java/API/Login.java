@@ -42,7 +42,7 @@ public class Login extends HttpServlet {
             DB bd = new DB();
             bd.setConnection(
                     "com.mysql.cj.jdbc.Driver",
-                    "jdbc:mysql://localhost/ads_proyecto?serverTimezone=UTC"
+                    "jdbc:mysql://localhost:3306/ads_proyecto?serverTimezone=UTC"
             );
 
             PreparedStatement ps = bd.getConnection().prepareStatement(

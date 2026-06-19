@@ -23,13 +23,20 @@ public class MostrarDiagramas extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        
         JSONArray arreglo = new JSONArray();
         
         try {
             DB bd = new DB();
             bd.setConnection(
                     "com.mysql.cj.jdbc.Driver",
-                    "jdbc:mysql://localhost/ads_proyecto?serverTimezone=UTC"
+                    "jdbc:mysql://localhost:3306/ads_proyecto?serverTimezone=UTC"
             );
 
             PreparedStatement ps = bd.getConnection().prepareStatement(
@@ -42,11 +49,11 @@ public class MostrarDiagramas extends HttpServlet {
                 
                 JSONObject obj = new JSONObject();
                 obj.put("id",rs.getInt("id_diagrama"));
-                obj.put("nombre",rs.getInt("nombre"));
+                obj.put("nombre",rs.getString("nombre"));
                 arreglo.put(obj);
             }
             
-            out.print(arreglo.toString());    
+            response.getWriter().print(arreglo.toString());
             
             rs.close();
             bd.closeConnection();

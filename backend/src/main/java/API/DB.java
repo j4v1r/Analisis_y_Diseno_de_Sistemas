@@ -26,7 +26,7 @@ public class DB implements java.io.Serializable {
             throws IOException, java.sql.SQLException {
         try {
             Class.forName(driver);
-            con = DriverManager.getConnection(url, "root", "1234");
+            con = DriverManager.getConnection(url, "root", "Batibruc3m#n");
             this.url = url;
             this.driver = driver;
         } catch (ClassNotFoundException e) {
