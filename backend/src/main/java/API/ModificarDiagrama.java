@@ -13,18 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- * Servlet para modificar un diagrama existente.
- * Recibe JSON por POST con la estructura:
- * {
- *   "id_diagrama": 1,
- *   "nombre": "Nuevo nombre",
- *   "idusuario": 1,
- *   "nodos": [ { "id_tipo": 1, "texto": "Inicio", "pos_x": 100, "pos_y": 50 }, ... ],
- *   "conexiones": [ { "origen_idx": 0, "destino_idx": 1, "etiqueta": "" }, ... ]
- * }
- * Estrategia: elimina nodos/conexiones anteriores y los reinserta con las nuevas posiciones.
- */
 @WebServlet(name = "ModificarDiagrama", urlPatterns = {"/ModificarDiagrama"})
 public class ModificarDiagrama extends HttpServlet {
 

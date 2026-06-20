@@ -13,22 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- * Servlet para crear diagramas de flujo con nodos y conexiones.
- * Recibe JSON por POST con la estructura:
- * {
- *   "nombre": "Mi diagrama",
- *   "idusuario": 1,
- *   "nodos": [
- *     { "id_tipo": 1, "texto": "Inicio", "pos_x": 100, "pos_y": 50 },
- *     ...
- *   ],
- *   "conexiones": [
- *     { "origen_idx": 0, "destino_idx": 1, "etiqueta": "" },
- *     ...
- *   ]
- * }
- */
 @WebServlet(name = "CrearDiagrama", urlPatterns = {"/CrearDiagrama"})
 public class CrearDiagrama extends HttpServlet {
 

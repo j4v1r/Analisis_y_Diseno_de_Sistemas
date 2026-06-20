@@ -12,23 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- * Devuelve un diagrama completo con sus nodos y conexiones.
- * GET /MostrarDiagrama?id=1
- * Respuesta:
- * {
- *   "id": 1,
- *   "nombre": "Validacion de dato",
- *   "nodos": [
- *     { "idnodo": 1, "id_tipo": 1, "tipo_nombre": "inicio", "texto": "Inicio", "pos_x": 100, "pos_y": 50 },
- *     ...
- *   ],
- *   "conexiones": [
- *     { "idconexion": 1, "id_origen": 1, "id_destino": 2, "etiqueta": null },
- *     ...
- *   ]
- * }
- */
 @WebServlet(name = "MostrarDiagrama", urlPatterns = {"/MostrarDiagrama"})
 public class MostrarDiagrama extends HttpServlet {
 
