@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-@WebServlet(name = "CrearDiagrama", urlPatterns = {"/CrearDiagrama"})
-public class CrearDiagrama extends HttpServlet {
+@WebServlet(name = "ModificarDiagrama", urlPatterns = {"/ModificarDiagrama"})
+public class ModificarDiagrama extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -28,7 +28,6 @@ public class CrearDiagrama extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        // Leer body JSON
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = request.getReader().readLine()) != null) {
@@ -38,8 +37,8 @@ public class CrearDiagrama extends HttpServlet {
         try {
             JSONObject body = new JSONObject(sb.toString());
 
+            int    idDiagrama = body.getInt("id_diagrama");
             String nombre     = body.getString("nombre");
-            int    idusuario  = body.getInt("idusuario");
             JSONArray nodos      = body.getJSONArray("nodos");
             JSONArray conexiones = body.getJSONArray("conexiones");
 
@@ -49,28 +48,27 @@ public class CrearDiagrama extends HttpServlet {
                 "jdbc:mysql://localhost:3306/ads_proyecto?serverTimezone=UTC"
             );
 
-            // ── 1. Insertar diagrama ──────────────────────────────────────
+            // ── 1. Actualizar nombre y fecha_modificacion del diagrama ────
             Timestamp ahora = new Timestamp(System.currentTimeMillis());
-            PreparedStatement psDiagrama = bd.getConnection().prepareStatement(
-                "INSERT INTO diagrama (nombre, fecha_creacion, fecha_modificacion, idusuario) VALUES (?,?,?,?)",
-                PreparedStatement.RETURN_GENERATED_KEYS
+            PreparedStatement psUpdate = bd.getConnection().prepareStatement(
+                "UPDATE diagrama SET nombre=?, fecha_modificacion=? WHERE id_diagrama=?"
             );
-            psDiagrama.setString(1, nombre);
-            psDiagrama.setTimestamp(2, ahora);
-            psDiagrama.setTimestamp(3, ahora);
-            psDiagrama.setInt(4, idusuario);
-            psDiagrama.executeUpdate();
+            psUpdate.setString(1, nombre);
+            psUpdate.setTimestamp(2, ahora);
+            psUpdate.setInt(3, idDiagrama);
+            psUpdate.executeUpdate();
+            psUpdate.close();
 
-            ResultSet rsKeys = psDiagrama.getGeneratedKeys();
-            if (!rsKeys.next()) {
-                out.print("{\"status\":\"no\",\"mensaje\":\"Error al crear el diagrama\"}");
-                return;
-            }
-            int idDiagrama = rsKeys.getInt(1);
+            // ── 2. Eliminar nodos anteriores (las conexiones se eliminan en cascada) ──
+            PreparedStatement psDelNodos = bd.getConnection().prepareStatement(
+                "DELETE FROM nodo WHERE id_diagrama=?"
+            );
+            psDelNodos.setInt(1, idDiagrama);
+            psDelNodos.executeUpdate();
+            psDelNodos.close();
 
-            // ── 2. Insertar nodos y guardar sus IDs reales ────────────────
+            // ── 3. Reinsertar nodos ───────────────────────────────────────
             int[] idsNodos = new int[nodos.length()];
-
             PreparedStatement psNodo = bd.getConnection().prepareStatement(
                 "INSERT INTO nodo (id_diagrama, id_tipo, texto, pos_x, pos_y) VALUES (?,?,?,?,?)",
                 PreparedStatement.RETURN_GENERATED_KEYS
@@ -86,12 +84,11 @@ public class CrearDiagrama extends HttpServlet {
                 psNodo.executeUpdate();
 
                 ResultSet rsNodo = psNodo.getGeneratedKeys();
-                if (rsNodo.next()) {
-                    idsNodos[i] = rsNodo.getInt(1);
-                }
+                if (rsNodo.next()) idsNodos[i] = rsNodo.getInt(1);
             }
+            psNodo.close();
 
-            // ── 3. Insertar conexiones usando los IDs reales ──────────────
+            // ── 4. Reinsertar conexiones ──────────────────────────────────
             PreparedStatement psConexion = bd.getConnection().prepareStatement(
                 "INSERT INTO conexion (id_origen, id_destino, etiqueta) VALUES (?,?,?)"
             );
@@ -102,15 +99,14 @@ public class CrearDiagrama extends HttpServlet {
                 int destinoIdx = c.getInt("destino_idx");
                 String etiqueta = c.optString("etiqueta", "");
 
-                psConexion.setInt(1, idsNodos[origenIdx]);
-                psConexion.setInt(2, idsNodos[destinoIdx]);
-                psConexion.setString(3, etiqueta);
-                psConexion.executeUpdate();
+                if (origenIdx < idsNodos.length && destinoIdx < idsNodos.length) {
+                    psConexion.setInt(1, idsNodos[origenIdx]);
+                    psConexion.setInt(2, idsNodos[destinoIdx]);
+                    psConexion.setString(3, etiqueta);
+                    psConexion.executeUpdate();
+                }
             }
-
-            psNodo.close();
             psConexion.close();
-            psDiagrama.close();
             bd.closeConnection();
 
             out.print("{\"status\":\"yes\",\"id_diagrama\":" + idDiagrama + "}");
@@ -121,7 +117,6 @@ public class CrearDiagrama extends HttpServlet {
         }
     }
 
-    // Responder preflight CORS
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
