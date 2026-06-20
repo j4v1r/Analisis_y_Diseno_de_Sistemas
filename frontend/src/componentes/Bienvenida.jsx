@@ -7,20 +7,21 @@ function Bienvenida({ usuario }) {
     const [cargando, setCargando] = useState(true);
     const navigate = useNavigate();
 
-    useEffect(() => {
+    const cargarDiagramas = () => {
+        setCargando(true);
         fetch('http://localhost:8080/backend/MostrarDiagramas')
             .then(res => res.json())
             .then(data => {
                 setDiagramas(Array.isArray(data) ? data : []);
                 setCargando(false);
             })
-            .catch(() => {
-                setCargando(false);
-            });
-    }, []);
+            .catch(() => setCargando(false));
+    };
 
-    const eliminarDiagrama = (id) => {
-        if (!window.confirm('¿Seguro que deseas eliminar este diagrama?')) return;
+    useEffect(() => { cargarDiagramas(); }, []);
+
+    const eliminarDiagrama = (id, nombre) => {
+        if (!window.confirm(`¿Seguro que deseas eliminar "${nombre}"?`)) return;
 
         fetch('http://localhost:8080/backend/EliminarDiagrama?id=' + id)
             .then(res => res.json())
@@ -37,7 +38,6 @@ function Bienvenida({ usuario }) {
     return (
         <div className="dashboard">
 
-            {/* Navbar */}
             <nav className="dash-navbar">
                 <span className="marca">Graficadora <span>Online</span></span>
                 <div className="usuario-badge">
@@ -47,16 +47,14 @@ function Bienvenida({ usuario }) {
             </nav>
 
             <div className="dash-body">
-
-                {/* Info práctica */}
                 <p style={{ fontSize: '0.75rem', color: 'rgba(248,250,255,0.35)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     Práctica #4 — Grupo 5CM1
                 </p>
                 <h2 className="dash-titulo">Panel de Diagramas</h2>
                 <p className="dash-subtitulo">Gestiona tus diagramas de flujo multimedia</p>
 
-                {/* Acciones CRUD */}
-                <div className="acciones-grid">
+                {/* Solo Crear y Ver */}
+                <div className="acciones-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: 520 }}>
                     <div className="accion-card crear" onClick={() => navigate('/crear')}>
                         <span className="icono">＋</span>
                         Crear diagrama
@@ -65,17 +63,9 @@ function Bienvenida({ usuario }) {
                         <span className="icono">📊</span>
                         Ver diagrama
                     </div>
-                    <div className="accion-card cambios">
-                        <span className="icono">✏️</span>
-                        Modificar
-                    </div>
-                    <div className="accion-card bajas">
-                        <span className="icono">🗑</span>
-                        Eliminar
-                    </div>
                 </div>
 
-                {/* Tabla de diagramas */}
+                {/* Tabla */}
                 <div className="tabla-seccion">
                     <div className="tabla-header">
                         <h3>Mis diagramas</h3>
@@ -113,12 +103,15 @@ function Bienvenida({ usuario }) {
                                             >
                                                 Ver
                                             </button>
-                                            <button className="btn-tabla btn-editar">
+                                            <button
+                                                className="btn-tabla btn-editar"
+                                                onClick={() => navigate('/editar?id=' + d.id)}
+                                            >
                                                 Editar
                                             </button>
                                             <button
                                                 className="btn-tabla btn-eliminar"
-                                                onClick={() => eliminarDiagrama(d.id)}
+                                                onClick={() => eliminarDiagrama(d.id, d.nombre)}
                                             >
                                                 Eliminar
                                             </button>
@@ -129,7 +122,6 @@ function Bienvenida({ usuario }) {
                         </table>
                     )}
                 </div>
-
             </div>
         </div>
     );
