@@ -33,9 +33,9 @@ CREATE TABLE `conexion` (
   PRIMARY KEY (`idconexion`),
   KEY `id_nodo_origen_idx` (`id_origen`),
   KEY `id_nodo_destino_idx` (`id_destino`),
-  CONSTRAINT `id_nodo_destino` FOREIGN KEY (`id_destino`) REFERENCES `nodo` (`idnodo`),
+  CONSTRAINT `id_nodo_destino` FOREIGN KEY (`id_destino`) REFERENCES `nodo` (`idnodo`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_nodo_origen` FOREIGN KEY (`id_origen`) REFERENCES `nodo` (`idnodo`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,7 @@ CREATE TABLE `conexion` (
 
 LOCK TABLES `conexion` WRITE;
 /*!40000 ALTER TABLE `conexion` DISABLE KEYS */;
-INSERT INTO `conexion` VALUES (1,1,2,NULL),(2,2,3,NULL),(3,3,4,'Si'),(4,3,5,'No'),(5,4,6,NULL),(6,5,6,NULL);
+INSERT INTO `conexion` VALUES (1,1,2,NULL),(2,2,3,NULL),(3,3,4,'Si'),(4,3,5,'No'),(5,4,6,NULL),(6,5,6,NULL),(7,7,8,NULL),(8,8,9,NULL),(9,9,10,NULL),(10,10,11,'Si'),(11,11,8,'Regresar'),(12,10,12,'No'),(13,12,13,NULL),(14,13,14,NULL),(15,15,16,NULL),(16,16,17,NULL),(17,17,18,NULL),(18,18,19,'Si'),(19,19,20,NULL),(20,20,23,NULL),(21,18,21,'No'),(22,21,22,NULL),(23,22,16,'Intentar de nuevo');
 /*!40000 ALTER TABLE `conexion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,7 +64,7 @@ CREATE TABLE `diagrama` (
   PRIMARY KEY (`id_diagrama`),
   KEY `id_usuario_diagrama_idx` (`idusuario`),
   CONSTRAINT `id_usuario_diagrama` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +73,7 @@ CREATE TABLE `diagrama` (
 
 LOCK TABLES `diagrama` WRITE;
 /*!40000 ALTER TABLE `diagrama` DISABLE KEYS */;
-INSERT INTO `diagrama` VALUES (1,'Validacion de dato','2026-06-18 07:47:34','2026-06-18 07:47:34',1);
+INSERT INTO `diagrama` VALUES (1,'Validacion de dato','2026-06-18 07:47:34','2026-06-18 07:47:34',1),(2,'Registro y promedio de alumnos','2026-06-20 20:51:03','2026-06-20 20:51:03',1),(3,'Validacion de acceso de usuario','2026-06-20 20:51:03','2026-06-20 20:51:03',1);
 /*!40000 ALTER TABLE `diagrama` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -96,7 +96,7 @@ CREATE TABLE `nodo` (
   KEY `id_tipo_nodo_idx` (`id_tipo`),
   CONSTRAINT `id_nodo_diagrama` FOREIGN KEY (`id_diagrama`) REFERENCES `diagrama` (`id_diagrama`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_tipo_nodo` FOREIGN KEY (`id_tipo`) REFERENCES `tipo_componente` (`id_tipo`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,7 +105,7 @@ CREATE TABLE `nodo` (
 
 LOCK TABLES `nodo` WRITE;
 /*!40000 ALTER TABLE `nodo` DISABLE KEYS */;
-INSERT INTO `nodo` VALUES (1,1,1,'Inicio',100,50),(2,1,5,'Capturar dato',100,150),(3,1,4,'¿Dato > 0?',100,250),(4,1,3,'Procesar dato',50,350),(5,1,5,'Mostrar Error',250,350),(6,1,2,'Fin',150,500);
+INSERT INTO `nodo` VALUES (1,1,1,'Inicio',100,50),(2,1,5,'Capturar dato',100,150),(3,1,4,'¿Dato > 0?',100,250),(4,1,3,'Procesar dato',50,350),(5,1,5,'Mostrar Error',250,350),(6,1,2,'Fin',150,500),(7,2,1,'Inicio',400,50),(8,2,5,'Leer nombre y calificacion',350,140),(9,2,3,'Acumular calificacion y aumentar contador',320,240),(10,2,4,'¿Hay mas alumnos?',370,350),(11,2,6,'A',180,430),(12,2,3,'Calcular promedio',600,430),(13,2,5,'Mostrar promedio del grupo',580,530),(14,2,2,'Fin',620,630),(15,3,1,'Inicio',400,50),(16,3,5,'Leer usuario y contraseña',350,140),(17,3,3,'Validar datos en el sistema',330,240),(18,3,4,'¿Credenciales correctas?',350,350),(19,3,3,'Crear sesión de usuario',600,440),(20,3,5,'Mostrar bienvenida',600,540),(21,3,5,'Mostrar usuario o contraseña incorrectos',80,440),(22,3,6,'A',180,560),(23,3,2,'Fin',620,650);
 /*!40000 ALTER TABLE `nodo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -169,4 +169,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-18  8:04:59
+-- Dump completed on 2026-06-20 20:53:52

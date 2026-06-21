@@ -128,7 +128,7 @@ function Bienvenida({ usuario }) {
 
             <div className="dash-body">
                 <p style={{ fontSize: '0.75rem', color: 'rgba(248,250,255,0.35)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                    Práctica #4 — Grupo 5CM1
+                    Proyecto Final — Grupo 5CM1
                 </p>
                 <h2 className="dash-titulo">Panel de Diagramas</h2>
                 <p className="dash-subtitulo">Gestiona tus diagramas de flujo multimedia</p>
