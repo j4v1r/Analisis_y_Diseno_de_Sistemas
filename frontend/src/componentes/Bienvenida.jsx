@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
 import '../Login.css';
 
@@ -20,19 +21,98 @@ function Bienvenida({ usuario }) {
 
     useEffect(() => { cargarDiagramas(); }, []);
 
-    const eliminarDiagrama = (id, nombre) => {
-        if (!window.confirm(`¿Seguro que deseas eliminar "${nombre}"?`)) return;
+    const eliminarDiagrama = async (id, nombre) => {
+        const resultado = await Swal.fire({
+            title: 'Alerta',
+            html: '¿Busca eliminar este ejercicio?',
+            icon: 'warning',
+
+            background: '#111827',
+            color: '#f8fafc',
+
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'No',
+
+            reverseButtons: true,
+
+            customClass: {
+                popup: 'swal-dark',
+                title: 'swal-title',
+                confirmButton: 'swal-confirm',
+                cancelButton: 'swal-cancel'
+            },
+
+            buttonsStyling: false
+        });
+
+        if (!resultado.isConfirmed) return;
 
         fetch('http://localhost:8080/backend/EliminarDiagrama?id=' + id)
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'yes') {
-                    setDiagramas(prev => prev.filter(d => d.id !== id));
+                    setDiagramas(prev =>
+                        prev.filter(d => d.id !== id));
+
+                    Swal.fire({
+                        title: 'Eliminado',
+                        text: 'El ejercicio fue eliminado correctamente.',
+                        icon: 'success',
+
+                        background: '#111827',
+                        color: '#f8fafc',
+
+                        confirmButtonText: 'Aceptar',
+
+                        customClass: {
+                            popup: 'swal-dark',
+                            confirmButton: 'swal-confirm'
+                        },
+
+                        buttonsStyling: false
+                    });
+
                 } else {
-                    alert('No se pudo eliminar el diagrama.');
+
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No fue posible eliminar el ejercicio.',
+                        icon: 'error',
+
+                        background: '#111827',
+                        color: '#f8fafc',
+
+                        confirmButtonText: 'Aceptar',
+
+                        customClass: {
+                            popup: 'swal-dark',
+                            confirmButton: 'swal-confirm'
+                        },
+
+                        buttonsStyling: false
+                    });
                 }
             })
-            .catch(() => alert('Error al conectar con el servidor.'));
+            .catch(() =>
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error al conectar con el servidor.',
+                    icon: 'error',
+
+                    background: '#111827',
+                    color: '#f8fafc',
+
+                    confirmButtonText: 'Aceptar',
+
+                    customClass: {
+                        popup: 'swal-dark',
+                        confirmButton: 'swal-confirm'
+                    },
+
+                    buttonsStyling: false
+                })
+            );
     };
 
     return (

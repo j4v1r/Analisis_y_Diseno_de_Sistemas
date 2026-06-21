@@ -27,6 +27,7 @@ function Login({ setUsuario }) {
                     navigate('/bienvenida');
                 } else {
                     setError('Usuario o contraseña incorrectos.');
+                    navigate('/error-login');
                 }
             })
             .catch(() => {

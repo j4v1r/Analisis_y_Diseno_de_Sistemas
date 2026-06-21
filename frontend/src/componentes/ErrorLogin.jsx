@@ -1,45 +1,65 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './Login.css';
+import { useNavigate } from 'react-router-dom';
+import '../Login.css';
 
-function NoRegistrado() {
+function ErrorLogin() {
+
+    const navigate = useNavigate();
 
     return (
         <div className="fondo">
 
+            {/* Encabezado */}
             <div className="encabezado">
-
-                <h1>Graficadora Online</h1>
-
-                <h5>
-                    Diagramas de Flujo Multimedia
-                </h5>
-
+                <h1>Graficadora <span>Online</span></h1>
+                <p>Diagramas de Flujo Multimedia</p>
             </div>
 
-            <div className="login-card text-center">
+            {/* Tarjeta de error */}
+            <div className="login-card">
 
-                <h3 className="text-danger mb-4">
-                    USUARIO NO REGISTRADO EN LA APLICACIÓN WEB
-                </h3>
+                <h2
+                    style={{
+                        color: '#ef4444',
+                        textAlign: 'center'
+                    }}
+                >
+                    Acceso denegado
+                </h2>
 
-                <p>
+                <p
+                    className="subtitulo"
+                    style={{
+                        textAlign: 'center',
+                        marginBottom: '25px'
+                    }}
+                >
                     El usuario o la contraseña proporcionados
                     no se encuentran registrados en el sistema.
                 </p>
 
-                <Link
-                    to="/"
-                    className="btn btn-primary mt-3"
+                <button
+                    className="btn-ingresar"
+                    onClick={() => navigate('/')}
                 >
-                    Regresa a Login para volver a intentarlo
-                </Link>
+                    Volver al Login
+                </button>
 
+            </div>
+
+            {/* Integrantes */}
+            <div className="integrantes">
+                <strong>Integrantes</strong>
+                <br />
+                Colunga Aguilar Javier Alejandro
+                <br />
+                Hernández López Luis Ángel
+                <br />
+                Vásquez Andrés Rajiv Eduardo
             </div>
 
         </div>
     );
 }
 
-export default NoRegistrado;
+export default ErrorLogin;
