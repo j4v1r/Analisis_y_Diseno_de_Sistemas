@@ -29,7 +29,7 @@ public class MostrarDiagrama extends HttpServlet {
 
         String idParam = request.getParameter("id");
         if (idParam == null || idParam.isEmpty()) {
-            out.print("{\"status\":\"no\",\"mensaje\":\"Falta el parámetro id\"}");
+            out.print("{\"status\":\"no\",\"mensaje\":\"Falta el parametro id\"}");
             return;
         }
 
@@ -42,9 +42,9 @@ public class MostrarDiagrama extends HttpServlet {
                 "jdbc:mysql://localhost:3306/ads_proyecto?serverTimezone=UTC"
             );
 
-            // ── 1. Datos del diagrama ─────────────────────────────────────
+            // ── 1. Datos del diagrama (incluye url_archivo) ───────────────
             PreparedStatement psDiag = bd.getConnection().prepareStatement(
-                "SELECT id_diagrama, nombre FROM diagrama WHERE id_diagrama = ?"
+                "SELECT id_diagrama, nombre, url_archivo FROM diagrama WHERE id_diagrama = ?"
             );
             psDiag.setInt(1, idDiagrama);
             ResultSet rsDiag = psDiag.executeQuery();
@@ -58,16 +58,19 @@ public class MostrarDiagrama extends HttpServlet {
             JSONObject resultado = new JSONObject();
             resultado.put("id", rsDiag.getInt("id_diagrama"));
             resultado.put("nombre", rsDiag.getString("nombre"));
+
+            // url_archivo puede ser null si no tiene archivo adjunto
+            String urlArchivo = rsDiag.getString("url_archivo");
+            resultado.put("url_archivo", urlArchivo != null ? urlArchivo : "");
+
             rsDiag.close();
             psDiag.close();
 
-            // ── 2. Nodos del diagrama ─────────────────────────────────────
+            // ── 2. Nodos ──────────────────────────────────────────────────
             PreparedStatement psNodos = bd.getConnection().prepareStatement(
                 "SELECT n.idnodo, n.id_tipo, t.nombre AS tipo_nombre, n.texto, n.pos_x, n.pos_y " +
-                "FROM nodo n " +
-                "JOIN tipo_componente t ON n.id_tipo = t.id_tipo " +
-                "WHERE n.id_diagrama = ? " +
-                "ORDER BY n.idnodo"
+                "FROM nodo n JOIN tipo_componente t ON n.id_tipo = t.id_tipo " +
+                "WHERE n.id_diagrama = ? ORDER BY n.idnodo"
             );
             psNodos.setInt(1, idDiagrama);
             ResultSet rsNodos = psNodos.executeQuery();
@@ -75,23 +78,22 @@ public class MostrarDiagrama extends HttpServlet {
             JSONArray nodos = new JSONArray();
             while (rsNodos.next()) {
                 JSONObject nodo = new JSONObject();
-                nodo.put("idnodo",     rsNodos.getInt("idnodo"));
-                nodo.put("id_tipo",    rsNodos.getInt("id_tipo"));
-                nodo.put("tipo_nombre",rsNodos.getString("tipo_nombre"));
-                nodo.put("texto",      rsNodos.getString("texto"));
-                nodo.put("pos_x",      rsNodos.getInt("pos_x"));
-                nodo.put("pos_y",      rsNodos.getInt("pos_y"));
+                nodo.put("idnodo",      rsNodos.getInt("idnodo"));
+                nodo.put("id_tipo",     rsNodos.getInt("id_tipo"));
+                nodo.put("tipo_nombre", rsNodos.getString("tipo_nombre"));
+                nodo.put("texto",       rsNodos.getString("texto"));
+                nodo.put("pos_x",       rsNodos.getInt("pos_x"));
+                nodo.put("pos_y",       rsNodos.getInt("pos_y"));
                 nodos.put(nodo);
             }
             rsNodos.close();
             psNodos.close();
             resultado.put("nodos", nodos);
 
-            // ── 3. Conexiones del diagrama ────────────────────────────────
+            // ── 3. Conexiones ─────────────────────────────────────────────
             PreparedStatement psConex = bd.getConnection().prepareStatement(
                 "SELECT c.idconexion, c.id_origen, c.id_destino, c.etiqueta " +
-                "FROM conexion c " +
-                "JOIN nodo n ON c.id_origen = n.idnodo " +
+                "FROM conexion c JOIN nodo n ON c.id_origen = n.idnodo " +
                 "WHERE n.id_diagrama = ?"
             );
             psConex.setInt(1, idDiagrama);
@@ -115,7 +117,7 @@ public class MostrarDiagrama extends HttpServlet {
             out.print(resultado.toString());
 
         } catch (NumberFormatException e) {
-            out.print("{\"status\":\"no\",\"mensaje\":\"ID inválido\"}");
+            out.print("{\"status\":\"no\",\"mensaje\":\"ID invalido\"}");
         } catch (Exception e) {
             e.printStackTrace();
             out.print("{\"status\":\"no\",\"mensaje\":\"" + e.getMessage() + "\"}");

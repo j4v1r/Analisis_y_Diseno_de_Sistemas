@@ -60,6 +60,17 @@ public class ModificarDiagrama extends HttpServlet {
             psUpdate.executeUpdate();
             psUpdate.close();
 
+            PreparedStatement psDelConex = bd.getConnection().prepareStatement(
+                "DELETE FROM conexion WHERE id_origen IN " +
+                "(SELECT idnodo FROM nodo WHERE id_diagrama=?) " +
+                "OR id_destino IN " +
+                "(SELECT idnodo FROM nodo WHERE id_diagrama=?)"
+            );
+            psDelConex.setInt(1, idDiagrama);
+            psDelConex.setInt(2, idDiagrama);
+            psDelConex.executeUpdate();
+            psDelConex.close();
+
             // ── 2. Eliminar nodos anteriores (las conexiones se eliminan en cascada) ──
             PreparedStatement psDelNodos = bd.getConnection().prepareStatement(
                 "DELETE FROM nodo WHERE id_diagrama=?"

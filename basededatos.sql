@@ -170,3 +170,7 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-06-20 20:53:52
+
+--Ejecutar para agregar la columna url_archivo a la tabla diagrama
+USE ads_proyecto;
+ALTER TABLE diagrama ADD COLUMN url_archivo VARCHAR(255) DEFAULT NULL;
